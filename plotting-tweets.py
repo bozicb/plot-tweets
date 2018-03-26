@@ -35,7 +35,7 @@ plt.xlabel('Twitter account age in years')
 plt.ylabel('# of tweets')
 plt.annotate('More Trump tweets',xy=(1,35000),xytext=(2,35000),
              arrowprops=dict(facecolor='black'))
-#plt.show()
+plt.show()
 
 tweets['red']=tweets['user_bg_color'].apply(lambda x: colors.hex2color('#{0}'.format(x))[0])
 tweets['blue']=tweets['user_bg_color'].apply(lambda x: colors.hex2color('#{0}'.format(x))[2])
@@ -56,13 +56,14 @@ def create_plot(data):
 
     plt.tight_layout()
     plt.show()
-
-tc=tweets[~tweets['user_bg_color'].isin(tweets['user_bg_color'].value_counts()[0:3])]
+    
+tc=tweets[~tweets['user_bg_color'].isin(tweets['user_bg_color']
+                                        .value_counts().iloc[:3].to_dict().keys())]
 create_plot(tc)
 
 gr=tweets.groupby('candidate').agg([np.mean,np.std])
 
-fig,axes=plt.subplots(nrows=2,ncols=2,figsize=(7,7))
+fig,axes=plt.subplots(nrows=2,ncols=1,figsize=(7,7))
 ax0,ax1=axes.flat
 
 std=gr['polarity']['std'].iloc[1:]
@@ -76,3 +77,33 @@ ax1.set_title('Mean tweet sentiment')
 
 plt.tight_layout()
 plt.show()
+
+def tweet_lengths(text):
+    if len(text)<100:
+        return 'short'
+    elif 100<=len(text)<=135:
+        return 'medium'
+    else:
+        return 'long'
+
+tweets['tweet_length']=tweets['text'].apply(tweet_lengths)
+
+tl={}
+for candidate in ['clinton','sanders','trump']:
+    tl[candidate]=tweets['tweet_length'][tweets['candidate']==candidate].value_counts()
+
+
+fig,ax=plt.subplots()
+width=.5
+x=np.array(range(0,6,2))
+ax.bar(x,tl["clinton"],width,color='g')
+ax.bar(x+width,tl["sanders"],width,color='b')
+ax.bar(x+(width*2),tl["trump"],width,color='r')
+
+ax.set_ylabel('# of tweets')
+ax.set_title('Number of Tweets per candidate by length')
+ax.set_xticks(x+(width*1.5))
+ax.set_xticklabels(('long','medium','short'))
+ax.set_xlabel('Tweet length')
+plt.show()
+
