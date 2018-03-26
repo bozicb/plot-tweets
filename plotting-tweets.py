@@ -38,7 +38,7 @@ plt.annotate('More Trump tweets',xy=(1,35000),xytext=(2,35000),
 plt.show()
 
 tweets['red']=tweets['user_bg_color'].apply(lambda x: colors.hex2color('#{0}'.format(x))[0])
-tweets['blue']=tweets['user_bg_color'].apply(lambda x: colors.hex2color('#{0}'.format(x))[0])
+tweets['blue']=tweets['user_bg_color'].apply(lambda x: colors.hex2color('#{0}'.format(x))[2])
 
 fig,axes=plt.subplots(nrows=2,ncols=2)
 ax0,ax1,ax2,ax3=axes.flat
@@ -50,8 +50,10 @@ ax1.set_title('Red in Trump tweeters')
 
 ax2.hist(tweets['blue'])
 ax2.set_title('Blue in backgrounds')
-ax3.hist(tweets['blue'][tweets['candidate']=='clinton'].values)
-ax3.set_title('Blue in Clinton tweeters')
+ax3.hist(tweets['blue'][tweets['candidate']=='trump'].values)
+ax3.set_title('Blue in Trump tweeters')
 
 plt.tight_layout()
 plt.show()
+
+tweets['user_bg_color'].value_counts()
