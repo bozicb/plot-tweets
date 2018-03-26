@@ -107,3 +107,11 @@ ax.set_xticklabels(('long','medium','short'))
 ax.set_xlabel('Tweet length')
 plt.show()
 
+# TODOs:
+# - Analyze user descriptions, and see how description length varies by candidate.
+# - Explore time of day — do supporters of one candidate tweet more at certain times?
+# - Explore user location, and see which states tweet about which candidates the most.
+# - See what kinds of usernames tweet more about what kinds of candidates.
+#   - Do more digits in usernames correlate with support for a candidate?
+#   - Which candidate has the most all caps supporters?
+# - Scrape more data, and see if the patterns shift.
