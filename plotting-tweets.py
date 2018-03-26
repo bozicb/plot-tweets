@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 import numpy as np
 from datetime import datetime
 
@@ -27,12 +28,30 @@ cl_tweets=tweets['user_age'][tweets['candidate']=='clinton']
 sa_tweets=tweets['user_age'][tweets['candidate']=='sanders']
 tr_tweets=tweets['user_age'][tweets['candidate']=='trump']
 
-plt.hist([cl_tweets,sa_tweets,tr_tweets],stacked=True,
-         label=['clinton','sanders','trum'])
+plt.hist([cl_tweets,sa_tweets,tr_tweets],stacked=True,label=['clinton','sanders','trum'])
 plt.legend()
 plt.title('Tweets mentioning each candidate')
 plt.xlabel('Twitter account age in years')
 plt.ylabel('# of tweets')
 plt.annotate('More Trump tweets',xy=(1,35000),xytext=(2,35000),
              arrowprops=dict(facecolor='black'))
+plt.show()
+
+tweets['red']=tweets['user_bg_color'].apply(lambda x: colors.hex2color('#{0}'.format(x))[0])
+tweets['blue']=tweets['user_bg_color'].apply(lambda x: colors.hex2color('#{0}'.format(x))[0])
+
+fig,axes=plt.subplots(nrows=2,ncols=2)
+ax0,ax1,ax2,ax3=axes.flat
+
+ax0.hist(tweets['red'])
+ax0.set_title('Red in backgrounds')
+ax1.hist(tweets['red'][tweets['candidate']=='trump'].values)
+ax1.set_title('Red in Trump tweeters')
+
+ax2.hist(tweets['blue'])
+ax2.set_title('Blue in backgrounds')
+ax3.hist(tweets['blue'][tweets['candidate']=='clinton'].values)
+ax3.set_title('Blue in Clinton tweeters')
+
+plt.tight_layout()
 plt.show()
