@@ -35,25 +35,44 @@ plt.xlabel('Twitter account age in years')
 plt.ylabel('# of tweets')
 plt.annotate('More Trump tweets',xy=(1,35000),xytext=(2,35000),
              arrowprops=dict(facecolor='black'))
-plt.show()
+#plt.show()
 
 tweets['red']=tweets['user_bg_color'].apply(lambda x: colors.hex2color('#{0}'.format(x))[0])
 tweets['blue']=tweets['user_bg_color'].apply(lambda x: colors.hex2color('#{0}'.format(x))[2])
 
-fig,axes=plt.subplots(nrows=2,ncols=2)
-ax0,ax1,ax2,ax3=axes.flat
+def create_plot(data):
+    fig,axes=plt.subplots(nrows=2,ncols=2)
+    ax0,ax1,ax2,ax3=axes.flat
 
-ax0.hist(tweets['red'])
-ax0.set_title('Red in backgrounds')
-ax1.hist(tweets['red'][tweets['candidate']=='trump'].values)
-ax1.set_title('Red in Trump tweeters')
+    ax0.hist(tweets['red'])
+    ax0.set_title('Red in backgrounds')
+    ax1.hist(tweets['red'][tweets['candidate']=='trump'].values)
+    ax1.set_title('Red in Trump tweeters')
 
-ax2.hist(tweets['blue'])
-ax2.set_title('Blue in backgrounds')
-ax3.hist(tweets['blue'][tweets['candidate']=='trump'].values)
-ax3.set_title('Blue in Trump tweeters')
+    ax2.hist(tweets['blue'])
+    ax2.set_title('Blue in backgrounds')
+    ax3.hist(tweets['blue'][tweets['candidate']=='trump'].values)
+    ax3.set_title('Blue in Trump tweeters')
+
+    plt.tight_layout()
+    plt.show()
+
+tc=tweets[~tweets['user_bg_color'].isin(tweets['user_bg_color'].value_counts()[0:3])]
+create_plot(tc)
+
+gr=tweets.groupby('candidate').agg([np.mean,np.std])
+
+fig,axes=plt.subplots(nrows=2,ncols=2,figsize=(7,7))
+ax0,ax1=axes.flat
+
+std=gr['polarity']['std'].iloc[1:]
+mean=gr['polarity']['mean'].iloc[1:]
+ax0.bar(range(len(std)),std)
+ax0.set_xticklabels(std.index,rotation=45)
+ax0.set_title('Standard deviation of tweet sentiment')
+ax1.bar(range(len(mean)),mean)
+ax1.set_xticklabels(mean.index,rotation=45)
+ax1.set_title('Mean tweet sentiment')
 
 plt.tight_layout()
 plt.show()
-
-tweets['user_bg_color'].value_counts()
